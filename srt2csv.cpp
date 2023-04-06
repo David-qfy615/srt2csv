@@ -7,7 +7,7 @@
 
 using namespace std;
 
-int main()
+int main(int argc, char *infilename[])
 {
     //设置控制台编码为UTF-8
     SetConsoleOutputCP(CP_UTF8);
@@ -18,14 +18,29 @@ int main()
     string line0;
     int timeh;
     int num;
-    ifstream inFile("input.srt");
-    ofstream outFile("out.csv");
 
-    if (!inFile.is_open())
+    //获取输入文件名称
+    if (argc < 2)
     {
-        cout << "Unable to open input file." << endl;
+        std::cerr << "Usage: " << infilename[0] << " filename\n";
         return 1;
     }
+
+    std::ifstream inFile(infilename[1]);
+    if (!inFile)
+    {
+        std::cerr << "Failed to open file " << infilename[1] << "\n";
+        return 1;
+    }
+
+    std::string filename(infilename[1]);                                   // 将 char* 类型的字符串转换为 std::string
+    std::string basename = filename.substr(0, filename.find_last_of(".")); // 截取文件名，不包括扩展名
+
+    //把输入的名称传给输出文件，并把文件后缀改为csv
+    stringstream outfilename1;
+    outfilename1 << basename << ".csv";
+    string outfilename = outfilename1.str();
+    ofstream outFile(outfilename);
 
     if (!outFile.is_open())
     {
@@ -37,39 +52,19 @@ int main()
 
     outFile << "时码输入,"
             << "时码输出,"
-            << "对话" << endl; //写入标题
+            << "对话,"
+            << "描述" << endl; //写入标题
 
+    //开始文件内容转换
     while (getline(inFile, line))
     {
         // 如果是数字开头，且没有 "-->" 或 ":" 字符串，则跳过该行
-        if (isdigit(line[0]) && line.find("-->") == string::npos && line.find(":") == string::npos)
+        if (isdigit(line[0]) && line.find("-->") == string::npos && line.find(":") == string::npos && line.find(",") == string::npos)
         {
             continue;
         }
 
-        // 替换所有的逗号为冒号
-        size_t pos = 0;
-        while ((pos = line.find(",", pos)) != string::npos)
-        {
-            line.replace(pos, 1, ":");
-
-            pos++;
-            // cout<<line<<endl;
-        }
-
-        // 替换所有的时间轴分隔符为一个空格//可以优化，尝试留空，减少空格
-        while ((pos = line.find("-")) != string::npos)
-        {
-            line.replace(pos, 1, "");
-        }
-
-        // 替换所有的大于号为逗号
-        while ((pos = line.find(">")) != string::npos)
-        {
-            line.replace(pos, 1, ",");
-        }
-
-        // 在字幕内容前面添加一个逗号 //需要修改，字幕内容也需要加“,”，
+        // 在字幕内容格式转换
         if (isdigit(line[0]) && isdigit(line.back()))
         {
 
@@ -88,11 +83,11 @@ int main()
 
                 int itime24 = itimems / 41; // 毫秒转换为24帧的帧数
 
-                //输出时间转换
-                int otimeh = stoi(line.substr(arrow_pos + 13));
-                int otimemin = stoi(line.substr(arrow_pos + 16));
-                int otimes = stoi(line.substr(arrow_pos + 19));
-                int otimems = stoi(line.substr(arrow_pos + 22));
+                //输出时间转换  13 16 19 22      15 18 21 24
+                int otimeh = stoi(line.substr(arrow_pos + 15));
+                int otimemin = stoi(line.substr(arrow_pos + 18));
+                int otimes = stoi(line.substr(arrow_pos + 21));
+                int otimems = stoi(line.substr(arrow_pos + 24));
 
                 int otime24 = otimems / 41; // 毫秒转换为24帧的帧数
 
@@ -120,8 +115,8 @@ int main()
             line2 = line;
 
             // line = "" ;
+            cout << line << endl;
             continue;
-            // cout<< line <<endl ;
         }
 
         if (!isdigit(line[0]) && !isdigit(line.back()))
@@ -129,13 +124,19 @@ int main()
             line3 = line2 + line;
         }
 
-        // 跳过纯时间码的行
-        if (isdigit(line3[0]) && line3.length() < 29)
+        // 跳过纯时间码的行和其他非正常内容的行
+
+        if (line3.length() < 3)
         {
             continue;
         }
 
-        // cout << line3 << endl;
+        if (isdigit(line3[0]) && line3.length() < 26)
+        {
+            continue;
+        }
+
+        cout << line3 << endl;
 
         // 写入输出文件
         outFile << line3 << endl;
