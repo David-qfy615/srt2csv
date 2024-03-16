@@ -9,7 +9,7 @@ using namespace std;
 
 int main(int argc, char *infilename[])
 {
-    //设置控制台编码为UTF-8
+    //设置控制台编码 为UTF-8
     SetConsoleOutputCP(CP_UTF8);
 
     string line;
@@ -36,7 +36,7 @@ int main(int argc, char *infilename[])
     std::string filename(infilename[1]);                                   // 将 char* 类型的字符串转换为 std::string
     std::string basename = filename.substr(0, filename.find_last_of(".")); // 截取文件名，不包括扩展名
 
-    //把输入的名称传给输出文件，并把文件后缀改为csv
+    //把输入的名称传给输出文件，并把文件后缀改为 csv
     stringstream outfilename1;
     outfilename1 << basename << ".csv";
     string outfilename = outfilename1.str();
