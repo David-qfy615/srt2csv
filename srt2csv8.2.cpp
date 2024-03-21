@@ -9,7 +9,7 @@
 using namespace std;
 
 
-// SRT字幕中单条字幕的结构体,再测试一下
+// SRT字幕中单条字幕的结构体,再再测试一下
 struct SrtSubtitle {
     int index;                // 字幕序号
     string startTime;    // 显示开始时间
