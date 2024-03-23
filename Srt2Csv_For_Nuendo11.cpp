@@ -150,7 +150,7 @@ int main(int argc, char* argv[]) {
             dialog << line;
         }
         //outFile << subtitle.index << "," << startTime << "," << endTime << ",\"" << dialog.str() << "\"" << endl;  
-        outFile << startTime << "," << endTime << ",\"" << dialog.str() << "\"" << endl;  
+        outFile << "角色" << "," << startTime << "," << endTime << ",\"" << dialog.str() << "\"" << endl;  
     }
 
     inFile.close();
