@@ -11,13 +11,14 @@ using namespace std;
 
 // SRT字幕中单条字幕的结构体
 struct SrtSubtitle {
+    string actor;                // 角色
     int index;                // 字幕序号
     string startTime;    // 显示开始时间
     string endTime;      // 显示结束时间
     vector<string> textLines; // 字幕文本，支持多行
 
     // 构造函数
-    SrtSubtitle(int idx, const string& start, const string& end, const vector<string>& text)
+    SrtSubtitle(const string& actor,int idx, const string& start, const string& end, const vector<string>& text)
         : index(idx), startTime(start), endTime(end), textLines(text) {}
 };
 
@@ -58,6 +59,7 @@ string convertTimeToFrames(const string& srtTime) {
 //读取字幕文件
 bool parseSrtSubtitle(ifstream& inFile, SrtSubtitle& subtitle) {
     string line;
+    string actor; 
     int index;
     string startTime, endTime;
     vector<string> textLines;
@@ -94,7 +96,7 @@ bool parseSrtSubtitle(ifstream& inFile, SrtSubtitle& subtitle) {
         textLines.push_back(line);
     }
 
-    subtitle = SrtSubtitle(index, startTime, endTime, textLines);
+    subtitle = SrtSubtitle(actor, index, startTime, endTime, textLines);
     return true;
 }
 
@@ -132,16 +134,18 @@ int main(int argc, char* argv[]) {
     // 写入bom和标题
     outFile << char(0xEF) << char(0xBB) << char(0xBF); // 写入BOM，防止中文乱码
     //outFile << "ID,时码输入,时码输出,对话,描述,角色,配音员" << endl; // 写入标题
-    outFile << "时码输入,时码输出,对话,翻译,描述,角色,配音员" << endl; // 写入标题
+    outFile << "角色,时码输入,时码输出,对话,翻译,描述,配音员" << endl; // 写入标题
 
    
-    SrtSubtitle subtitle(0, "", "", {}); //初始化单行字幕结构
+    SrtSubtitle subtitle("actor",0, "", "", {}); //初始化单行字幕结构
 
     // 执行帧数转换，并写入csv文件
     while (parseSrtSubtitle(inFile, subtitle)) {
         // 将时间转换为帧
         string startTime = convertTimeToFrames(subtitle.startTime);
         string endTime = convertTimeToFrames(subtitle.endTime);
+
+        string actor = subtitle.actor; //演员名称传递过来
 
         //需要修改这里的多行字幕输出，有的可以，又的不行
         stringstream dialog;
@@ -150,7 +154,7 @@ int main(int argc, char* argv[]) {
             dialog << line;
         }
         //outFile << subtitle.index << "," << startTime << "," << endTime << ",\"" << dialog.str() << "\"" << endl;  
-        outFile << "角色" << "," << startTime << "," << endTime << ",\"" << dialog.str() << "\"" << endl;  
+        outFile << actor << "," << startTime << "," << endTime << ",\"" << dialog.str() << "\"" << endl;  
     }
 
     inFile.close();
