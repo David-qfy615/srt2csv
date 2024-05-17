@@ -21,19 +21,6 @@ struct SrtSubtitle {
         : index(idx), startTime(start), endTime(end), textLines(text) {}
 };
 
-
-// 用于存储整个SRT字幕文件内容的结构体,好像没什么用的代码
-/*
-struct SrtFile {
-    vector<SrtSubtitle> subtitles; // 存储所有字幕条目
-
-    // 添加一条字幕
-    void addSubtitle(const SrtSubtitle& subtitle) {
-        subtitles.push_back(subtitle);
-    }
-};
-*/
-
 int inputframes = 24 ; //定义每秒24帧，后面需要改成可以自定义的
 
 // 定义 转换时间单位毫秒到24帧数 的函数
