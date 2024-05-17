@@ -8,7 +8,6 @@
 
 using namespace std;
 
-
 // SRT字幕中单条字幕的结构体
 struct SrtSubtitle {
     int index;                // 字幕序号
@@ -41,7 +40,6 @@ string convertTimeToFrames(const string& srtTime) {
     return oss.str();
 }
 
-
 //读取字幕文件
 bool parseSrtSubtitle(ifstream& inFile, SrtSubtitle& subtitle) {
     string line;
@@ -59,16 +57,6 @@ bool parseSrtSubtitle(ifstream& inFile, SrtSubtitle& subtitle) {
         return false;
     }
 
-/*
-    // 从第一行读取序号
-    try {
-        index = stoi(line); // 将读取的行转换为序号
-    } catch (const invalid_argument& ia) {         
-        cerr << "无效的序号: " << line << endl;
-        return false;
-    }
-*/
-
     // 读取时间戳
     if (!getline(inFile, line)) return false;
     istringstream iss(line);
@@ -80,7 +68,6 @@ bool parseSrtSubtitle(ifstream& inFile, SrtSubtitle& subtitle) {
     while (getline(inFile, line) && !line.empty()) {
         textLines.push_back(line);
     }
-
     subtitle = SrtSubtitle(index, startTime, endTime, textLines);
     return true;
 }
@@ -115,13 +102,11 @@ int main(int argc, char* argv[]) {
         cout << "Unable to open output file." << endl;
         return 1;
     }
-
     // 写入bom和标题
     outFile << char(0xEF) << char(0xBB) << char(0xBF); // 写入BOM，防止中文乱码
     //outFile << "ID,时码输入,时码输出,对话,描述,角色,配音员" << endl; // 写入标题
     outFile << "时码输入,时码输出,对话,翻译,描述,角色,配音员" << endl; // 写入标题
-
-   
+ 
     SrtSubtitle subtitle(0, "", "", {}); //初始化单行字幕结构
 
     // 执行帧数转换，并写入csv文件
@@ -139,11 +124,9 @@ int main(int argc, char* argv[]) {
         //outFile << subtitle.index << "," << startTime << "," << endTime << ",\"" << dialog.str() << "\"" << endl;  
         outFile << startTime << "," << endTime << ",\"" << dialog.str() << "\"" << endl;  
     }
-
     inFile.close();
     outFile.close();
     cout << "转换成功" << endl;
     system("pause");
-
     return 0;
 }
