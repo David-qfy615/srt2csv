@@ -8,7 +8,6 @@
 
 using namespace std;
 
-
 // SRT字幕中单条字幕的结构体
 struct SrtSubtitle {
     string actor;                // 角色
@@ -42,7 +41,6 @@ string convertTimeToFrames(const string& srtTime) {
     return oss.str();
 }
 
-
 //读取字幕文件
 bool parseSrtSubtitle(ifstream& inFile, SrtSubtitle& subtitle) {
     string line;
@@ -60,16 +58,6 @@ bool parseSrtSubtitle(ifstream& inFile, SrtSubtitle& subtitle) {
     if (inFile.eof()) {
         return false;
     }
-
-/*
-    // 从第一行读取序号
-    try {
-        index = stoi(line); // 将读取的行转换为序号
-    } catch (const invalid_argument& ia) {         
-        cerr << "无效的序号: " << line << endl;
-        return false;
-    }
-*/
 
     // 读取时间戳
     if (!getline(inFile, line)) return false;
