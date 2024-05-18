@@ -4,14 +4,14 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:/qfy615/Porject/Others/Compiler/mingw64/include/*"
+                "C:/Users/qfy615/ToolsLocal/CodeTools/mingw64/include/*"
             ],
             "defines": [
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE"
             ],
-            "compilerPath": "C:/qfy615/Porject/Others/Compiler/mingw64/bin/gcc.exe",
+            "compilerPath": "C:/Users/qfy615/ToolsLocal/CodeTools/mingw64/bin/gcc.exe",
             "cStandard": "c11",
             "cppStandard": "c++17",
             "intelliSenseMode": "gcc-x64"
